@@ -35,6 +35,7 @@ setup(name='zopyx.ipsumplone',
           'plone.api',
           'requests',
           'loremipsum',
+          'six',
           # -*- Extra requirements: -*-
       ],
       entry_points="""

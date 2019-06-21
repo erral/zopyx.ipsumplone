@@ -20,24 +20,26 @@ from plone.behavior.interfaces import IBehaviorAssignable
 from plone.namedfile import NamedBlobImage
 from plone.namedfile import NamedBlobFile
 
+import six
 
-pdf_data = file(os.path.join(os.path.dirname(__file__), 'demo.pdf'), 'rb').read()
+
+pdf_data = open(os.path.join(os.path.dirname(__file__), 'demo.pdf'), 'rb').read()
 
 
 def gen_paragraphs(num=3):
-    return u'/'.join([p[2] for p in loremipsum.Generator().generate_paragraphs(num)])
+    return six.ensure_text(u'/'.join([p[2] for p in loremipsum.Generator().generate_paragraphs(num)]))
 
 
 def gen_sentence():
-    return loremipsum.Generator().generate_sentence()[-1]
+    return six.ensure_text(loremipsum.Generator().generate_sentence()[-1])
 
 
 def gen_word():
-    return gen_sentence().split()[0]
+    return six.ensure_text(gen_sentence().split()[0])
 
 
 def gen_sentences(length=80):
-    return u'/'.join([s[2] for s in loremipsum.Generator().generate_sentences(length)])
+    return six.ensure_text(u'/'.join([s[2] for s in loremipsum.Generator().generate_sentences(length)]))
 
 
 def random_image(width, height):
@@ -100,6 +102,8 @@ class Setup(BrowserView):
         dirpath, id = path.rsplit('/', 1)
         current = self.context
         for p in dirpath.split('/'):
+            # while p in current.objectIds():
+            #     p += '-01'
             if p not in current.objectIds():
                 obj = plone.api.content.create(type='Folder', container=current, id=p, title=p)
                 obj.setTitle(p.capitalize())
@@ -164,3 +168,12 @@ class Setup(BrowserView):
         obj.contact_phone = '+49 1234 1212121'
         obj.event_url = u'https://www.plone.org'
         obj.reindexObject()
+
+
+class CustomSetup(Setup):
+    def __call__(self):
+        from plone.protect.interfaces import IDisableCSRFProtection
+        from zope.interface import alsoProvides
+        alsoProvides(self.request, IDisableCSRFProtection)
+
+        return self.setupDemoContent()

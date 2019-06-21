@@ -21,4 +21,11 @@
         for="Products.CMFCore.interfaces.ISiteRoot"
     />
 
+    <browser:page
+        name="my-demo-content"
+        permission="cmf.ManagePortal"
+        class=".setup.CustomSetup"
+        for="*"
+    />
+
 </configure>
