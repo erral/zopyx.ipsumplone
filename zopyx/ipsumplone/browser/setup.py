@@ -21,7 +21,7 @@ from plone.namedfile import NamedBlobImage
 from plone.namedfile import NamedBlobFile
 
 
-pdf_data = file(os.path.join(os.path.dirname(__file__), 'demo.pdf'), 'rb').read()
+pdf_data = open(os.path.join(os.path.dirname(__file__), 'demo.pdf'), 'rb').read()
 
 
 def gen_paragraphs(num=3):
